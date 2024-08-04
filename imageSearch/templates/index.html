@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        
+</head>
+<body>
+    <h1>Image Search</h1>
+    <form action="/search" method="post" enctype="multipart/form-data">
+        <input type="file" id="imageInput" name="image" accept="image/*" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Contenedor para la vista previa de la imagen -->
+    <div class="image-preview-container">
+        <img id="imagePreview" class="image-preview" src="" alt="Image Preview">
+    </div>
+
+    <script>
+        // Función para mostrar una vista previa de la imagen seleccionada
+        document.getElementById('imageInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').src = '';
+            }
+        });
+    </script>
+</body>
+</html>

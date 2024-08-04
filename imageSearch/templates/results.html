@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Imágenes Similares</h1>
+    <div class="results-container">
+        <div class="result-item">
+            <h2>Imagen Subida</h2>
+            <img src="{{ url_for('static', filename=uploaded_image_path) }}" alt="Imagen Subida" style="width: 200px; height: 200px;"/>
+        </div>
+        {% for img_path, img_name, img_category in neighbor_images %}
+            <div class="result-item">
+                <h2>{{ img_name }}</h2>
+                <p>{{ img_category }}</p>
+                <img src="{{ url_for('static', filename=img_path) }}" alt="Imagen Similar" style="width: 200px; height: 200px;"/>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="/">Volver a Buscar</a>
+</body>
+</html>

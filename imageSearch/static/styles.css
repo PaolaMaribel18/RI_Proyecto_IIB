@@ -1,0 +1,116 @@
+/* Estilos generales */
+body {
+    font-family: 'Roboto', sans-serif; /* Tipografía moderna */
+    background-color: #f4f4f9; /* Color de fondo suave */
+    color: #333; /* Color de texto oscuro para contraste */
+    padding: 20px;
+    margin: 0;
+}
+
+/* Encabezado */
+h1 {
+    text-align: center;
+    color: #333; /* Color de texto del encabezado */
+    font-size: 2.5rem; /* Tamaño de fuente más grande */
+    margin-bottom: 20px; /* Espacio debajo del encabezado */
+}
+
+/* Formulario */
+form {
+    background: #fff; /* Fondo blanco para el formulario */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    padding: 20px;
+    max-width: 600px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar el formulario */
+}
+
+/* Entrada de archivo */
+input[type="file"] {
+    display: block; /* Mostrar como bloque para ocupar toda la línea */
+    margin: 20px auto; /* Espaciado superior e inferior y centrar */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ddd; /* Borde sutil */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: #f9f9f9; /* Fondo ligeramente gris */
+}
+
+/* Botón */
+button {
+    background-color: #007bff; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    border: none; /* Eliminar el borde por defecto */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 10px 20px; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    cursor: pointer; /* Cambiar el cursor al pasar por encima */
+    transition: background-color 0.3s, transform 0.2s; /* Efectos de transición */
+}
+
+button:hover {
+    background-color: #0056b3; /* Color de fondo en hover */
+    transform: scale(1.05); /* Efecto de escala en hover */
+}
+
+button:active {
+    background-color: #004494; /* Color de fondo al hacer clic */
+    transform: scale(0.98); /* Efecto de escala al hacer clic */
+}
+
+/* Agrega estilos adicionales para la vista previa de la imagen */
+.image-preview-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.image-preview {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Results Styles */
+.results-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+img {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-item {
+    text-align: center;
+    max-width: 200px;
+}
+
+.result-item h2 {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.result-item p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Back Link Styles */
+a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #0056b3;
+}
