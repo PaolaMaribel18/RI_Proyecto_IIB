@@ -10,6 +10,7 @@ import os
 import matplotlib.pyplot as plt
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.models import Model
+
 app = Flask(__name__)
 
 # Load the pre-trained model and index
@@ -34,6 +35,7 @@ image_paths = np.load('data/image_paths.npy', allow_pickle=True)
 # Fit the NearestNeighbors model
 nn_model = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(train_features_flat)
 
+
 def preprocess_image(image):
     image = image.resize((299, 299))
     image = np.array(image)
@@ -41,6 +43,7 @@ def preprocess_image(image):
     image = tf.expand_dims(image, axis=0)
     image = image / 255.0
     return image
+
 
 def extract_features(image):
     features = model.predict(image)
@@ -116,4 +119,4 @@ def search():
     return render_template('results.html', uploaded_image_path=uploaded_image_path, neighbor_images=neighbor_images)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run("0.0.0.0")
