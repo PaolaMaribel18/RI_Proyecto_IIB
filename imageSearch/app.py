@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for
+import os
 import numpy as np
 import tensorflow as tf
-import tensorflow.keras.applications.vgg16 as keras_applications
-from tensorflow.keras.applications.vgg16 import VGG16
-from tensorflow.keras import Model
-from sklearn.neighbors import NearestNeighbors
-from PIL import Image
-import os
-import matplotlib.pyplot as plt
+import tensorflow.keras.applications as keras_applications
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.models import Model
+from tensorflow.keras.applications import VGG16
+from sklearn.neighbors import NearestNeighbors
+from PIL import Image
+import time  # Import time module for measuring execution time
+
+
 
 app = Flask(__name__)
+
+# Load the pre-trained model and index
+print("Loading model...")
+start_time = time.time()
 
 # Load the pre-trained model and index
 #base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
@@ -30,10 +35,12 @@ print("Forma de train_labels:", train_labels_flat.shape)
 
 # Cargar las rutas de las imágenes
 image_paths = np.load('data/image_paths.npy', allow_pickle=True)
-
+print("Primeras 2 rutas:")
+print(image_paths[:2])
 
 # Fit the NearestNeighbors model
-nn_model = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(train_features_flat)
+nn_model = NearestNeighbors(n_neighbors=5,algorithm='brute',metric='cosine', n_jobs=-1).fit(train_features_flat)
+print(f"Model and data loading took {time.time() - start_time:.2f} seconds")
 
 
 def preprocess_image(image):
@@ -49,21 +56,6 @@ def extract_features(image):
     features = model.predict(image)
     return features.flatten().reshape(1, -1)
 
-'''
-def get_image_path_from_index(index, base_dir):
-    """Construct image path from index."""
-    all_image_paths = []
-    for class_dir in os.listdir(base_dir):
-        class_path = os.path.join(base_dir, class_dir)
-        if os.path.isdir(class_path):  # Check if it's a directory
-            for image_file in os.listdir(class_path):
-                all_image_paths.append(os.path.join(class_path, image_file))
-    
-    if index < len(all_image_paths):
-        return all_image_paths[index]
-    else:
-        return None  # Handle the case where index is out of bounds
-'''
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 ALLOWED_EXTENSIONS = set({'png', 'jpg', 'jpeg'})
 # Función para guardar la imagen subida
@@ -119,4 +111,4 @@ def search():
     return render_template('results.html', uploaded_image_path=uploaded_image_path, neighbor_images=neighbor_images)
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
+    app.run(debug=True)
