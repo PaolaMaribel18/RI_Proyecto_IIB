@@ -8,16 +8,24 @@ from sklearn.neighbors import NearestNeighbors
 from PIL import Image
 import os
 import matplotlib.pyplot as plt
-
+from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.models import Model
 app = Flask(__name__)
 
 # Load the pre-trained model and index
-base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+#base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+#model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
+# Configurar el modelo InceptionV3
+base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(299, 299, 3))
 model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
 
 # Load precomputed features and labels
 train_features_flat = np.load('data/train_features.npy')
 train_labels_flat = np.load('data/train_labels.npy')
+
+# Imprimir la forma de los arrays
+print("Forma de train_features:", train_features_flat.shape)
+print("Forma de train_labels:", train_labels_flat.shape)
 
 # Cargar las rutas de las imágenes
 image_paths = np.load('data/image_paths.npy', allow_pickle=True)
@@ -27,7 +35,7 @@ image_paths = np.load('data/image_paths.npy', allow_pickle=True)
 nn_model = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(train_features_flat)
 
 def preprocess_image(image):
-    image = image.resize((224, 224))
+    image = image.resize((299, 299))
     image = np.array(image)
     image = tf.convert_to_tensor(image, dtype=tf.float32)
     image = tf.expand_dims(image, axis=0)
@@ -38,23 +46,27 @@ def extract_features(image):
     features = model.predict(image)
     return features.flatten().reshape(1, -1)
 
+'''
+def get_image_path_from_index(index, base_dir):
+    """Construct image path from index."""
+    all_image_paths = []
+    for class_dir in os.listdir(base_dir):
+        class_path = os.path.join(base_dir, class_dir)
+        if os.path.isdir(class_path):  # Check if it's a directory
+            for image_file in os.listdir(class_path):
+                all_image_paths.append(os.path.join(class_path, image_file))
+    
+    if index < len(all_image_paths):
+        return all_image_paths[index]
+    else:
+        return None  # Handle the case where index is out of bounds
+'''
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 ALLOWED_EXTENSIONS = set({'png', 'jpg', 'jpeg'})
 # Función para guardar la imagen subida
 
 from werkzeug.utils import secure_filename
-'''
-def save_image(file):
-    if file and file.filename:
-        print(f"Filename: {file.filename}")
-        print(f"Content Length: {file.content_length}")
-        if file.content_length > 0:  # Verifica si el archivo tiene contenido
-            filename = file.filename
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)  # Guarda el archivo directamente
-            return filename
-    return None
-'''
+
 
 def allowed_file(file):
     file=file.split(".")
@@ -98,7 +110,7 @@ def search():
     
     # Obtener las rutas de las imágenes de los vecinos más cercanos
     neighbor_images = [os.path.relpath(image_paths[idx], 'static').replace("\\", "/") for idx in indices]
-        
+    
     print(neighbor_images)    
         
     return render_template('results.html', uploaded_image_path=uploaded_image_path, neighbor_images=neighbor_images)
