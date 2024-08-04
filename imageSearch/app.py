@@ -39,16 +39,27 @@ def extract_features(image):
     return features.flatten().reshape(1, -1)
 
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-
+ALLOWED_EXTENSIONS = set({'png', 'jpg', 'jpeg'})
 # Función para guardar la imagen subida
+
+from werkzeug.utils import secure_filename
+'''
 def save_image(file):
     if file and file.filename:
-        filename = file.filename
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        return filename
-    
+        print(f"Filename: {file.filename}")
+        print(f"Content Length: {file.content_length}")
+        if file.content_length > 0:  # Verifica si el archivo tiene contenido
+            filename = file.filename
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)  # Guarda el archivo directamente
+            return filename
     return None
+'''
+
+def allowed_file(file):
+    file=file.split(".")
+    if file[1].lower() in ALLOWED_EXTENSIONS:
+        return True
 
 @app.route('/')
 def index():
@@ -60,8 +71,19 @@ def search():
         return redirect(request.url)
 
     image_file = request.files['image']
-    if image_file.filename == '':
-        return redirect(request.url)
+    print(image_file,image_file.filename)
+    filename=secure_filename(image_file.filename)
+    print(filename)
+    if image_file and allowed_file(filename):
+        print("Archivo permitido")
+        image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+
+
+    uploaded_image_p = os.path.join(app.config['UPLOAD_FOLDER'], filename).replace("\\", "/")
+    uploaded_image_path = uploaded_image_p.replace("static/", "")
+    print( "path",uploaded_image_path)
+
 
     # Process the uploaded image
     image = Image.open(image_file)
@@ -74,11 +96,6 @@ def search():
     print("Indices of nearest neighbors:", indices)
     print("Distances to nearest neighbors:", distances)
     
-     # Save the uploaded image and get its path
-    uploaded_image_filename = save_image(image_file)
-    uploaded_image_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_image_filename)
-
-
     # Obtener las rutas de las imágenes de los vecinos más cercanos
     neighbor_images = [os.path.relpath(image_paths[idx], 'static').replace("\\", "/") for idx in indices]
         
