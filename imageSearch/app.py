@@ -16,11 +16,11 @@ base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224,
 model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
 
 # Load precomputed features and labels
-train_features_flat = np.load(r'C:\Users\Paola\Documents\GitHub\RI_Proyecto_IIB\imageSearch\data\train_features.npy')
-train_labels_flat = np.load(r'C:\Users\Paola\Documents\GitHub\RI_Proyecto_IIB\imageSearch\data\train_labels.npy')
+train_features_flat = np.load('data/train_features.npy')
+train_labels_flat = np.load('data/train_labels.npy')
 
 # Cargar las rutas de las imágenes
-image_paths = np.load(r'C:\Users\Paola\Documents\GitHub\RI_Proyecto_IIB\imageSearch\data\image_paths.npy', allow_pickle=True)
+image_paths = np.load('data/image_paths.npy', allow_pickle=True)
 
 
 # Fit the NearestNeighbors model
@@ -47,6 +47,7 @@ def save_image(file):
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         return filename
+    
     return None
 
 @app.route('/')

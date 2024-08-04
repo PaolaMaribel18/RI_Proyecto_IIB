@@ -5,22 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados de Búsqueda</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .uploaded-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .result-image {
+            margin: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-image img {
+            display: block;
+            max-width: 200px;
+            height: auto;
+        }
+        .result-image p {
+            text-align: center;
+            padding: 5px;
+            margin: 0;
+            background: #f8f8f8;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin: 20px auto;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #007BFF;
+            border: 1px solid #007BFF;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        a:hover {
+            background: #007BFF;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h1>Imágenes Similares</h1>
-    <div class="results-container">
-        <div class="result-item">
+    <div class="container">
+        <h1>Imágenes Similares</h1>
+        <div>
             <h2>Imagen Subida</h2>
-            <img src="{{ url_for('static', filename=uploaded_image_path) }}" alt="Imagen Subida" style="width: 200px; height: 200px;"/>
+            <img src="{{ url_for('static', filename=uploaded_image_path) }}" alt="Imagen Subida" class="uploaded-image"/>
         </div>
-        {% for img_path, img_name, img_category in neighbor_images %}
-            <div class="result-item">
-                <h2>{{ img_name }}</h2>
-                <p>{{ img_category }}</p>
-                <img src="{{ url_for('static', filename=img_path) }}" alt="Imagen Similar" style="width: 200px; height: 200px;"/>
-            </div>
-        {% endfor %}
+        <div class="results">
+            {% for img_path in neighbor_images %}
+                <div class="result-image">
+                    <img src="{{ url_for('static', filename=img_path) }}" alt="Imagen Similar"/>
+                    <p>{{ img_path.split('/')[-2] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="/">Volver a Buscar</a>
     </div>
-    <a href="/">Volver a Buscar</a>
 </body>
 </html>
