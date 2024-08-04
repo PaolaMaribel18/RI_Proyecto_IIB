@@ -1,10 +1,10 @@
 import tensorflow as tf
-from tensorflow.keras.applications import VGG16
+from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.models import Model
 import numpy as np
 import tensorflow_datasets as tfds
 
-# Directorio  para la descarga
+# Directorio para la descarga
 data_dir = r'C:\Users\Paola\Downloads\caltech101'
 
 # Descargar y cargar el dataset
@@ -19,15 +19,15 @@ data_dir = r'C:\Users\Paola\Downloads\caltech101'
 
 # Preprocesar imágenes
 def preprocess_image(image, label):
-    image = tf.image.resize(image, (224, 224))
+    image = tf.image.resize(image, (299, 299))  # InceptionV3 usa 299x299
     image = tf.cast(image, tf.float32) / 255.0
     return image, label
 
 train_dataset = train_dataset.map(preprocess_image).shuffle(1000).batch(32)
 test_dataset = test_dataset.map(preprocess_image).batch(32)
 
-# Configurar el modelo VGG16
-base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+# Configurar el modelo InceptionV3
+base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=(299, 299, 3))
 model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
 
 # Función para extraer características
@@ -49,7 +49,7 @@ train_features_flat = np.array([feature.flatten() for batch in train_features fo
 train_labels_flat = np.array([label for batch in train_labels for label in batch])
 
 # Guardar el archivo
-np.save(r'\imageSearch\data\train_features.npy', train_features_flat)
-np.save(r'\imageSearch\data\train_labels.npy', train_labels_flat)
+np.save('data/train_features.npy', train_features_flat)
+np.save('data/train_labels.npy', train_labels_flat)
 
 print("Características y etiquetas guardadas exitosamente.")
