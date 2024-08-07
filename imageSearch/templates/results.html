@@ -37,10 +37,10 @@
             <div>
                 <h2 class="text-2xl font-semibold mb-4 text-center">Imágenes Similares</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for img_path in neighbor_images %}
+                    {% for image_data in neighbor_images_data %}
                         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                            <img src="{{ url_for('static', filename=img_path) }}" alt="Imagen Similar" class="w-full h-48 object-cover">
-                            <p class="text-center p-2 text-gray-700">{{ img_path.split('/')[-2] }}</p>
+                            <img src="{{ url_for('static', filename=image_data.url) }}" alt="Imagen Similar" class="w-full h-48 object-cover">
+                            <p class="text-center">{{ image_data.label }}</p>
                         </div>
                     {% endfor %}
                 </div>
