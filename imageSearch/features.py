@@ -59,12 +59,18 @@ test_features, test_labels, test_img = extract_features(test_dataset)
 train_features_flat = np.array([feature.flatten() for batch in train_features for feature in batch])
 train_labels_flat = np.array([label for batch in train_labels for label in batch])
 train_img_flat = np.array([img for batch in train_img for img in batch])
-test_img_flat = np.array([img for batch in test_img for img in batch]) #linea nueva para test
+#lineas nuevas para test
+test_features_flat = np.array([feature.flatten() for batch in test_features for feature in batch])
+test_labels_flat = np.array([label for batch in test_labels for label in batch])
+test_img_flat = np.array([img for batch in test_img for img in batch]) 
 
 # Guardar el archivo
 np.save('data/train_features.npy', train_features_flat)
 np.save('data/train_labels.npy', train_labels_flat)
 np.save('data/train_img.npy', train_img_flat)
-np.save('data/test_img.npy', test_img_flat) #linea nueva para test
+#lineas nuevas para test
+np.save('data/test_features.npy', test_features_flat)
+np.save('data/test_labels.npy', test_labels_flat)
+np.save('data/test_img.npy', test_img_flat)
 
 print("Características y etiquetas guardadas exitosamente.")
