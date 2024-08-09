@@ -37,7 +37,7 @@ print("Primeras 2 rutas:")
 print(image_paths[:2])
 
 # Fit the NearestNeighbors model
-nn_model = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(train_features_flat)
+nn_model = NearestNeighbors(n_neighbors=6, algorithm='brute', metric='cosine').fit(train_features_flat)
 
 print(f"Model and data loading took {time.time() - start_time:.2f} seconds")
 
