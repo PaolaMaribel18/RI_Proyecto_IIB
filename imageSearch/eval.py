@@ -19,7 +19,7 @@ test_labels = np.load('data/test_labels.npy')
 
 # Configure the NearestNeighbors model
 n_neighbors = 6
-algorithm = 'brute'  # 'ball_tree', 'kd_tree', o 'auto'
+algorithm = 'ball_tree'  # 'ball_tree', 'kd_tree', o 'auto'
 metric = 'cosine' if algorithm == 'brute' else None  # Solo se usa 'cosine' para brute-force
 
 nn_model = NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm, metric=metric).fit(train_features_flat) if metric else NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm).fit(train_features_flat)
@@ -60,8 +60,8 @@ for i in range(len(test_img_flat)):
     
     # Calculate precision and recall at k
     true_label = test_labels[i]
-    precision = precision_score([true_label]*k, nearest_labels, average='macro')
-    recall = recall_score([true_label]*k, nearest_labels, average='macro')
+    precision = precision_score([true_label]*k, nearest_labels, average='macro', zero_division=0)
+    recall = recall_score([true_label]*k, nearest_labels, average='macro', zero_division=0)
     
     precisions.append(precision)
     recalls.append(recall)
@@ -91,8 +91,8 @@ for i in range(len(test_img_flat)):
 mAP = average_precision_score(y_true, y_scores, average='macro')
 
 
-output_dir = 'data'
-output_file = 'resultados_evaluacion.txt'
+output_dir = 'result'
+output_file = 'resultados_evaluacion1.txt'
 output_path = os.path.join(output_dir, output_file)
 
 # Create the output directory if it does not exist
