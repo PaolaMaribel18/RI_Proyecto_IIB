@@ -15,7 +15,7 @@ test_labels = np.load('data/test_labels.npy')
 
 # Configure the NearestNeighbors model
 n_neighbors = 6
-algorithm = 'kd_tree'  # 'ball_tree', 'kd_tree', o 'auto'
+algorithm = 'ball_tree'  # 'ball_tree', 'kd_tree', o 'auto'
 metric = 'cosine' if algorithm == 'brute' else None  # Solo se usa 'cosine' para brute-force
 
 nn_model = NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm, metric=metric).fit(train_features_flat) if metric else NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm).fit(train_features_flat)
@@ -104,7 +104,7 @@ print(f'Tiempo de recuperación promedio: {mean_retrieval_time} segundos')
 print(f'mAP (Mean Average Precision): {mAP}')
 
 output_dir = 'result'
-output_file = 'resultados_evaluacion2.txt'
+output_file = 'resultados_evaluacion1.txt'
 output_path = os.path.join(output_dir, output_file)
 
 # Create the output directory if it does not exist
