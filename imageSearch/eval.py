@@ -98,6 +98,12 @@ output_path = os.path.join(output_dir, output_file)
 # Create the output directory if it does not exist
 os.makedirs(output_dir, exist_ok=True)
 
+print(f'Precision promedio: {mean_precision}')
+print(f'Recall promedio: {mean_recall}')
+print(f'Distancia promedio: {mean_average_distance}')
+print(f'Tiempo de recuperación promedio: {mean_retrieval_time} segundos')
+print(f'mAP (Mean Average Precision): {mAP}')
+
 # Save the evaluation results to a text file
 with open(output_path, 'w') as file:
     file.write('Modelo utilizado:\n')
