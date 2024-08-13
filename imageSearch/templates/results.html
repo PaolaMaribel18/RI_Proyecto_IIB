@@ -40,7 +40,7 @@
                     {% for image_data in neighbor_images_data %}
                         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                             <img src="{{ url_for('static', filename=image_data.url) }}" alt="Imagen Similar" class="w-full h-48 object-cover">
-                            <p class="text-center">{{ image_data.label }}</p>
+                            <p class="text-center">Label:{{ image_data.label }} <br> Distancia: {{ '{:.4f}'.format(image_data['distances']) }}  </p>
                         </div>
                     {% endfor %}
                 </div>
