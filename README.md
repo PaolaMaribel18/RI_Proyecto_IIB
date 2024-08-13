@@ -33,4 +33,19 @@ El objetivo de este proyecto es diseñar y desarrollar FindMyPic, un sistema de 
 ### 7. Interfaz Web de Usuario
 - **Objetivo:** Crear una interfaz para la interacción con el sistema.
 - **Tareas:** Diseñar una interfaz web para subir imágenes y mostrar resultados, asegurar una experiencia intuitiva y documentar el diseño.
- 
+
+## Entorno Virtual
+
+Para garantizar la consistencia del entorno de desarrollo, se ha configurado un entorno virtual. Asegúrate de activarlo antes de trabajar en el proyecto.
+
+```bash
+# Activar el entorno virtual
+source .venv/bin/activate
+```
+## Instalación de Dependencias
+
+Las dependencias necesarias para el proyecto están listadas en el archivo `requirements.txt`. Puedes instalarlas ejecutando el siguiente comando:
+
+```bash
+pip install -r requirements.txt
+```
