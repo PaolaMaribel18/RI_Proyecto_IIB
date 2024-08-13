@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
 import os
 import numpy as np
 import tensorflow as tf
@@ -6,10 +6,7 @@ from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.models import Model
 from sklearn.neighbors import NearestNeighbors
-from PIL import Image
-import matplotlib.pyplot as plt
-import io
-import base64
+from PIL import Image, ImageFilter
 import time
 from werkzeug.utils import secure_filename
 
@@ -43,10 +40,11 @@ print(f"Model and data loading took {time.time() - start_time:.2f} seconds")
 
 def preprocess_image(image):
     image = image.resize((224, 224))
+    image = image.filter(ImageFilter.MedianFilter(size=3))
     image = np.array(image)
     image = tf.convert_to_tensor(image, dtype=tf.float32)
+    image = image / 255.0  
     image = tf.expand_dims(image, axis=0)
-    image = image / 255.0
     return image
 
 def extract_features(image):
