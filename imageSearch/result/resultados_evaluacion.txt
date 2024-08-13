@@ -1,16 +1,16 @@
 Modelo utilizado:
-VGG16 (sin la capa superior de clasificación, preentrenado en ImageNet)
+VGG16 (sin la capa superior de clasificaciï¿½n, preentrenado en ImageNet)
 
-Parámetros del modelo de KNN:
+Parï¿½metros del modelo de KNN:
 Algoritmo: brute
 Metric: cosine
 n_neighbors: 6
 
-Resultados de la evaluación:
+Resultados de la evaluaciï¿½n:
 Precision promedio: 0.5485894275540948
 Recall promedio: 0.4934515657810646
 Distancia promedio: 0.12459341436624527
-Tiempo de recuperación promedio: 0.5508880290029082 segundos
+Tiempo de recuperaciï¿½n promedio: 0.5508880290029082 segundos
 mAP (Mean Average Precision): 0.03507240065774285
 
 Resultados detallados:
