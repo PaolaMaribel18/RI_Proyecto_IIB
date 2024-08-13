@@ -32,9 +32,9 @@ train_img_flat = np.load('data/train_img.npy')
 name_classes = np.load('data/name_classes.npy', allow_pickle=True)
 
 # Load image paths
-image_paths = np.load('data/image_paths.npy', allow_pickle=True)
-print("Primeras 2 rutas:")
-print(image_paths[:2])
+#image_paths = np.load('data/image_paths.npy', allow_pickle=True)
+#print("Primeras 2 rutas:")
+#print(image_paths[:2])
 
 # Fit the NearestNeighbors model
 nn_model = NearestNeighbors(n_neighbors=6, algorithm='brute', metric='cosine').fit(train_features_flat)
@@ -92,6 +92,7 @@ def search():
 
     # Find the nearest neighbors
     distances, indices = nn_model.kneighbors(query_features)
+    distances = distances[0] 
     indices = indices[0]
     print("Indices of nearest neighbors:", indices)
     print("Distances to nearest neighbors:", distances)
@@ -110,22 +111,19 @@ def search():
 
     # Generate paths for the nearest images
     # Generar las rutas para las imágenes similares
-    neighbor_images_data = [
-        {
-            'url': f'results/neighbor_{i}.jpg',  # Solo la ruta relativa
-            'label': name_classes[nearest_labels[i]]  # Nombre de la clase
-        }
-        for i in range(len(nearest_images))
-    ]
+    neighbor_images_data = [{
+        'url': f'results/neighbor_{i}.jpg',  # Solo la ruta relativa
+        'label': name_classes[nearest_labels[i]],  # Nombre de la clase
+        'distances': distances[i]  # Distancia al vecino más cercano
+    } for i in range(len(nearest_images))]
 
-    
     # Print the generated URLs and labels for validation
     print("Generated URLs and labels for neighbor images:")
     for image_data in neighbor_images_data:
         print(f"URL: {image_data['url']}, Label: {image_data['label']}")
 
     # Pass neighbor_images_data and name_classes to the template
-    return render_template('results.html', uploaded_image_path=uploaded_image_path, neighbor_images_data=neighbor_images_data, name_classes=name_classes)
+    return render_template('results.html', uploaded_image_path=uploaded_image_path, neighbor_images_data=neighbor_images_data, name_classes=name_classes, distances=distances)
 
     return redirect(request.url)
 if __name__ == '__main__':
