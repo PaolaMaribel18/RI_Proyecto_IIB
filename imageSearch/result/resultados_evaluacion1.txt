@@ -1,0 +1,13 @@
+Modelo utilizado:
+VGG16 (sin la capa superior de clasificación, preentrenado en ImageNet)
+
+Parámetros del modelo de KNN:
+Algoritmo: ball_tree
+n_neighbors: 6
+
+Resultados de la evaluación:
+Precision promedio: 0.5056012051492741
+Recall promedio: 0.44932895097233627
+Distancia promedio: 44.84403442229147
+Tiempo de recuperación promedio: 0.14986475432810473 segundos
+mAP (Mean Average Precision): 0.033854479058711924
