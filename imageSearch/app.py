@@ -110,7 +110,6 @@ def search():
         img_pil.save(os.path.join(app.config['RESULT_FOLDER'], f'neighbor_{i}.jpg'))
 
     # Generate paths for the nearest images
-    # Generar las rutas para las imágenes similares
     neighbor_images_data = [{
         'url': f'results/neighbor_{i}.jpg',  # Solo la ruta relativa
         'label': name_classes[nearest_labels[i]],  # Nombre de la clase
