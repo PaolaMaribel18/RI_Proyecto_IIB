@@ -58,8 +58,8 @@ for i in range(len(test_img_flat)):
     
     # Calculate precision and recall at k
     true_label = test_labels[i]
-    precision = precision_score([true_label]*k, nearest_labels, average='macro')
-    recall = recall_score([true_label]*k, nearest_labels, average='macro')
+    precision = precision_score([true_label]*k, nearest_labels, average='macro', zero_division=0)
+    recall = recall_score([true_label]*k, nearest_labels, average='macro', zero_division=0)
     
     precisions.append(precision)
     recalls.append(recall)
