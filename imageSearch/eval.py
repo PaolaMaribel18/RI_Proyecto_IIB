@@ -1,5 +1,6 @@
 from sklearn.metrics import precision_score, recall_score, average_precision_score
 import time
+import os
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import precision_score, recall_score
@@ -7,50 +8,57 @@ import tensorflow as tf
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.models import Model
 
+# Load the precomputed features, labels, and images
 train_features_flat=np.load('data/train_features.npy')
 train_labels_flat=np.load('data/train_labels.npy')
 test_img_flat=np.load('data/test_img.npy')
 test_labels = np.load('data/test_labels.npy')
 
-nn_model = NearestNeighbors(n_neighbors=5, algorithm='brute', metric='cosine').fit(train_features_flat)
+# Configure the NearestNeighbors model
+n_neighbors = 6
+algorithm = 'brute'  # 'ball_tree', 'kd_tree', o 'auto'
+metric = 'cosine' if algorithm == 'brute' else None  # Solo se usa 'cosine' para brute-force
+
+nn_model = NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm, metric=metric).fit(train_features_flat) if metric else NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm).fit(train_features_flat)
 
 # Load the VGG16 model with pretrained weights from ImageNet, without the top classification layer
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 model = Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
 
-# Definir el número de vecinos más cercanos para la evaluación
-k = 5
+# Define the number of neighbors to retrieve
+k = n_neighbors
 
-# Evaluar el sistema sobre un conjunto de pruebas
+# Evaluate the model using the test set
 precisions = []
 recalls = []
 average_distances = []
 retrieval_times = []
 
+# Iterate over the test images
 for i in range(len(test_img_flat)):
+    # Preprocess the query image
     imagen_consulta = test_img_flat[i]
     imagen_consulta = tf.expand_dims(imagen_consulta, axis=0)
     
-    # Extraer características de la imagen de consulta
+    # Extract features from the query image
     query_features = model.predict([imagen_consulta]).flatten().reshape(1, -1)
     
-    # Medir el tiempo de recuperación
+    # Calculate the time taken to retrieve the neighbors
     start_time = time.time()
     
-    # Encontrar los vecinos más cercanos
+    # Find the k nearest neighbors
     distances, indices = nn_model.kneighbors(query_features)
     
-    # Medir el tiempo de recuperación
+    # Get the time taken to retrieve the neighbors
     retrieval_times.append(time.time() - start_time)
     
-    # Obtener las etiquetas de los vecinos más cercanos
+    # Get the labels of the k nearest neighbors
     nearest_labels = [train_labels_flat[idx] for idx in indices.flatten()]
     
-    # Calcular la precisión y el recall para esta consulta
+    # Calculate precision and recall at k
     true_label = test_labels[i]
     precision = precision_score([true_label]*k, nearest_labels, average='macro')
     recall = recall_score([true_label]*k, nearest_labels, average='macro')
@@ -58,22 +66,18 @@ for i in range(len(test_img_flat)):
     precisions.append(precision)
     recalls.append(recall)
     
-    # Calcular la distancia promedio
+    # Calculate the average distance of the k nearest neighbors
     average_distance = np.mean(distances)
     average_distances.append(average_distance)
 
-# Calcular la precisión promedio, el recall promedio, y la distancia promedio
+# Calculate mean precision, recall, average distance, and retrieval time
 mean_precision = np.mean(precisions)
 mean_recall = np.mean(recalls)
 mean_average_distance = np.mean(average_distances)
 mean_retrieval_time = np.mean(retrieval_times)
 
-print(f'Precision promedio: {mean_precision}')
-print(f'Recall promedio: {mean_recall}')
-print(f'Distancia promedio: {mean_average_distance}')
-print(f'Tiempo de recuperación promedio: {mean_retrieval_time} segundos')
 
-# Calcular mAP (Mean Average Precision)
+# Calculate mAP (Mean Average Precision)
 y_true = test_labels
 y_scores = []
 for i in range(len(test_img_flat)):
@@ -85,8 +89,29 @@ for i in range(len(test_img_flat)):
     y_scores.append(nearest_labels)
 
 mAP = average_precision_score(y_true, y_scores, average='macro')
-print(f'Precision promedio: {mean_precision}')
-print(f'Recall promedio: {mean_recall}')
-print(f'Distancia promedio: {mean_average_distance}')
-print(f'Tiempo de recuperación promedio: {mean_retrieval_time} segundos')
-print(f'mAP (Mean Average Precision): {mAP}')
+
+
+output_dir = 'data'
+output_file = 'resultados_evaluacion.txt'
+output_path = os.path.join(output_dir, output_file)
+
+# Create the output directory if it does not exist
+os.makedirs(output_dir, exist_ok=True)
+
+# Save the evaluation results to a text file
+with open(output_path, 'w') as file:
+    file.write('Modelo utilizado:\n')
+    file.write('VGG16 (sin la capa superior de clasificación, preentrenado en ImageNet)\n')
+    file.write('\nParámetros del modelo de KNN:\n')
+    file.write(f'Algoritmo: {algorithm}\n')
+    if metric:
+        file.write(f'Metric: {metric}\n')
+    file.write(f'n_neighbors: {n_neighbors}\n')
+    file.write('\nResultados de la evaluación:\n')
+    file.write(f'Precision promedio: {mean_precision}\n')
+    file.write(f'Recall promedio: {mean_recall}\n')
+    file.write(f'Distancia promedio: {mean_average_distance}\n')
+    file.write(f'Tiempo de recuperación promedio: {mean_retrieval_time} segundos\n')
+    file.write(f'mAP (Mean Average Precision): {mAP}\n')
+
+print(f'Resultados guardados en {output_path}')
